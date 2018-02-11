@@ -47,15 +47,13 @@ namespace clip
             {
                 list.Add(line);
             }
-            try
+            if (list.Count == 0)
             {
-                Clipboard.SetFileDropList(list);
-            }
-            catch (ArgumentException e)
-            {
-                ShowError("error: "+e.Message);
+                ShowError("error: empty input.");
                 ErrorNum = 1;
+                return;
             }
+            Clipboard.SetFileDropList(list);
         }
 
         static void PasteFilesOutput()
@@ -121,6 +119,12 @@ namespace clip
             {
                 txtmem.Append(line);
             }
+            if (txtmem.Length == 0)
+            {
+                ShowError("error: empty input.");
+                ErrorNum = 1;
+                return;
+            }
             Clipboard.SetText(txtmem.ToString());
         }
 
@@ -139,7 +143,7 @@ namespace clip
             if (args.Length == 0)
             {
                 CopyInputText();
-                return 0;
+                return ErrorNum;
             }
 
             Job job = Job.nothing;
@@ -166,7 +170,7 @@ namespace clip
                     {
                         if (mode == Mode.nothing)
                         {
-                            mode = (ch == 't') ? Mode.text : (ch == 'm' ? Mode.image : (ch == 'a' ? Mode.image : Mode.filedroplist));
+                            mode = (ch == 't') ? Mode.text : (ch == 'm' ? Mode.image : (ch == 'a' ? Mode.audio : Mode.filedroplist));
                         }
                         else
                         {
